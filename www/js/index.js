@@ -18,16 +18,7 @@ function onDeviceReady() {
         });
     }
 
-    // iOS+Android settings
-    $('#request-camera').on("click", function(){
-        cordova.plugins.diagnostic.requestCameraAuthorization(function(granted){
-            console.log("Successfully requested camera authorization: authorization was " + (granted ? "GRANTED" : "DENIED"));
-            checkState();
-        }, function(error){
-            console.error(error);
-        });
-    });
-
+    // iOS settings
     $('#settings').on("click", function(){
         cordova.plugins.diagnostic.switchToSettings(function(){
             console.log("Successfully opened settings");
@@ -36,8 +27,6 @@ function onDeviceReady() {
         });
     });
 
-
-    // iOS settings
     $('#request-location-always').on("click", function(){
         cordova.plugins.diagnostic.requestLocationAuthorization(function(){
             console.log("Successfully requested location authorization always");
@@ -54,6 +43,15 @@ function onDeviceReady() {
         }, "when_in_use");
     });
 
+    $('#request-camera').on("click", function(){
+        cordova.plugins.diagnostic.requestCameraAuthorization(function(granted){
+            console.log("Successfully requested camera authorization: authorization was " + (granted ? "GRANTED" : "DENIED"));
+            checkState();
+        }, function(error){
+            console.error(error);
+        });
+    });
+
     $('#request-camera-roll').on("click", function(){
         cordova.plugins.diagnostic.requestCameraRollAuthorization(function(status){
             console.log("Successfully requested camera roll authorization: authorization status is now " + status);
@@ -64,14 +62,6 @@ function onDeviceReady() {
     });
 
     // Android settings
-    $('#request-location').on("click", function(){
-        cordova.plugins.diagnostic.requestLocationAuthorization(function(){
-            console.log("Successfully requested location authorization");
-        }, function(error){
-            console.error(error);
-        });
-    });
-
     $('#location-settings').on("click", function(){
         cordova.plugins.diagnostic.switchToLocationSettings();
     });
@@ -180,29 +170,23 @@ function checkState(){
     $('#state li').removeClass('on off');
 
     // Location
-    var onGetLocationAuthorizationStatus;
     cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
         $('#state .location').addClass(enabled ? 'on' : 'off');
     }, onError);
-
-    cordova.plugins.diagnostic.isLocationAuthorized(function(enabled){
-        $('#state .location-authorization').addClass(enabled ? 'on' : 'off');
-    }, onError);
-
-    cordova.plugins.diagnostic.getLocationAuthorizationStatus(function(status){
-        $('#state .location-authorization-status').find('.value').text(status.toUpperCase());
-        onGetLocationAuthorizationStatus(status); // platform-specific
-    }, onError);
-
 
     if(device.platform === "iOS"){
         cordova.plugins.diagnostic.isLocationEnabledSetting(function(enabled){
             $('#state .location-setting').addClass(enabled ? 'on' : 'off');
         }, onError);
 
-        onGetLocationAuthorizationStatus = function(status){
+        cordova.plugins.diagnostic.isLocationAuthorized(function(enabled){
+            $('#state .location-authorization').addClass(enabled ? 'on' : 'off');
+        }, onError);
+
+        cordova.plugins.diagnostic.getLocationAuthorizationStatus(function(status){
+            $('#state .location-authorization-status').find('.value').text(status.toUpperCase());
             $('.request-location').toggle(status === "not_determined");
-        }
+        }, onError);
     }
 
     if(device.platform === "Android"){
@@ -217,33 +201,27 @@ function checkState(){
         cordova.plugins.diagnostic.getLocationMode(function(mode){
             $('#state .location-mode').find('.value').text(mode.toUpperCase());
         }, onError);
-
-        onGetLocationAuthorizationStatus = function(status){
-            $('#request-location').toggle(status != "GRANTED" && status != "DENIED_ALWAYS");
-        }
     }
 
-
     // Camera
-    var onGetCameraAuthorizationStatus;
     cordova.plugins.diagnostic.isCameraEnabled(function(enabled){
         $('#state .camera').addClass(enabled ? 'on' : 'off');
     }, onError);
 
-    cordova.plugins.diagnostic.isCameraPresent(function(enabled){
-        $('#state .camera-present').addClass(enabled ? 'on' : 'off');
-    }, onError);
-
-    cordova.plugins.diagnostic.isCameraAuthorized(function(enabled){
-        $('#state .camera-authorized').addClass(enabled ? 'on' : 'off');
-    }, onError);
-
-    cordova.plugins.diagnostic.getCameraAuthorizationStatus(function(status){
-        $('#state .camera-authorization-status').find('.value').text(status.toUpperCase());
-        onGetCameraAuthorizationStatus(status);
-    }, onError);
-
     if(device.platform === "iOS"){
+        cordova.plugins.diagnostic.isCameraPresent(function(enabled){
+            $('#state .camera-present').addClass(enabled ? 'on' : 'off');
+        }, onError);
+
+        cordova.plugins.diagnostic.isCameraAuthorized(function(enabled){
+            $('#state .camera-authorized').addClass(enabled ? 'on' : 'off');
+        }, onError);
+
+        cordova.plugins.diagnostic.getCameraAuthorizationStatus(function(status){
+            $('#state .camera-authorization-status').find('.value').text(status.toUpperCase());
+            $('#request-camera').toggle(status === "not_determined");
+        }, onError);
+
         cordova.plugins.diagnostic.isCameraRollAuthorized(function(enabled){
             $('#state .camera-roll-authorized').addClass(enabled ? 'on' : 'off');
         }, onError);
@@ -252,16 +230,6 @@ function checkState(){
             $('#state .camera-roll-authorization-status').find('.value').text(status.toUpperCase());
             $('#request-camera-roll').toggle(status === "not_determined");
         }, onError);
-
-        onGetCameraAuthorizationStatus = function(status){
-            $('#request-camera').toggle(status === "not_determined");
-        }
-    }
-
-    if(device.platform === "Android"){
-        onGetCameraAuthorizationStatus = function(status){
-            $('#request-camera').toggle(status != "GRANTED" && status != "DENIED_ALWAYS");
-        }
     }
 
     cordova.plugins.diagnostic.isWifiEnabled(function(enabled){
