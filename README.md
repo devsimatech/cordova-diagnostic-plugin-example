@@ -1,19 +1,16 @@
-Cordova/Phonegap Diagnostic Plugin Example
-==========================================
+Cordova/Phonegap Diagnostic Plugin Example - Legacy Android version
+===================================================================
 
 This repo contains an example project which illustrates use of the [Diagnostic Cordova/Phonegap plugin](https://github.com/dpa99c/cordova-diagnostic-plugin).
-
-# Legacy Android version
 
 __Note:__ this branch contains a version of the project designed for testing a [legacy version of the plugin](https://github.com/dpa99c/cordova-diagnostic-plugin/tree/api-22) for building against legacy Android APIs (22 and below). The legacy plugin version contains all the functionality on the [master branch](https://github.com/dpa99c/cordova-diagnostic-plugin) __except__ support for Android 6 runtime-permissions, which introduces a minimum of API 23.
 If possible, you should use the master branch, which additionally supports Android 6 runtime-permissions.
 
 Phonegap Build (at the time of writing) does not support API 23, so its users and others who wish to build against API 22 or below, should use the legacy version.
 
-The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) as `cordova.plugins.diagnostic`.
-__However__ the version of the plugin published to npm is the master branch containing Android 6 runtime permissions code and adding the API 23+ dependency, so you'll need to install the legacy version of the plugin directly from the GitHub repo, specifying the branch:
+The legacy branch is published to npm as [`cordova.plugins.diagnostic.api-22`](https://www.npmjs.com/package/cordova.plugins.diagnostic.api-22), so you'll need to use this plugin ID when adding it:
 
-    cordova plugin add https://github.com/dpa99c/cordova-diagnostic-plugin#api-22
+    cordova plugin add cordova.plugins.diagnostic.api-22
 
 ## Contents
 * [Downloading](#downloading)

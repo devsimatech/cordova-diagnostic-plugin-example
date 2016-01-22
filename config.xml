@@ -22,7 +22,7 @@
     <plugin name="cordova-custom-config" version="*" />
     <plugin name="cordova-plugin-geolocation" version="*" />
 
-    <plugin name="https://github.com/dpa99c/cordova-plugin-diagnostic#api-22" version="*" />
+    <plugin name="cordova.plugins.diagnostic.api-22" version="*" />
 
     <platform name="android">
         <preference name="android-minSdkVersion" value="14" />
